@@ -1,0 +1,11 @@
+[Desktop Entry]
+Encoding=UTF-8
+Version=1.0
+Type=Application
+Categories=Accessories;
+Exec=gnvim %f
+Name=gnvim
+Comment=neovim gui
+Icon=neovim
+Terminal=false
+StartupWMClass=gnvim
