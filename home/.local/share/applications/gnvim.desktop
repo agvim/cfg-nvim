@@ -2,7 +2,7 @@
 Encoding=UTF-8
 Version=1.0
 Type=Application
-Categories=Accessories;
+Categories=Utility;
 Exec=gnvim %f
 Name=gnvim
 Comment=neovim gui
