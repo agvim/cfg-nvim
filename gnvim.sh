@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # lauch kitty with no shortcuts and execute neovim
-kitty -o clear_all_shortcuts=yes nvim $@ &
+kitty -c ~/.config/kitty/kittygnvim.conf nvim $@ &
 KITTYPID=$!
 
 # wait for kitty to spawn nvim and get its PID
