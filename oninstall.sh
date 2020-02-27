@@ -11,6 +11,9 @@ mkdir -p ~/.local/share/nvim/site/autoload/
 ln -s ~/.vim/autoload/plug.vim ~/.local/share/nvim/site/autoload/plug.vim
 mkdir -p ~/.config/nvim/
 ln -s ~/.vimrc ~/.config/nvim/init.vim
+ln -s ~/.config/vim/coc-settings.json ~/.config/nvim/coc-settings.json
+
+# Icons and gui wrapper setup
 CFG_NVIM_DIR="$(dirname "$BASH_SOURCE")"
 # TODO XXX FIXME:the icon did not work with xseticon inside the castle
 cp "$CFG_NVIM_DIR/neovim-icon.png" "$HOME/Pictures/"
