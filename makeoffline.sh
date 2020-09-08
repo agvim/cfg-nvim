@@ -9,6 +9,3 @@ mkdir -p $1/Pictures
 cp "$CFG_NVIM_DIR/neovim-icon.png" "$1/Pictures/"
 mkdir -p $1/.local/share/icons
 cp "$CFG_NVIM_DIR/neovim-icon.png" "$1/.local/share/icons/neovim.png"
-# link the gnvim wrapper to bin
-mkdir -p $1/bin
-cp -P "$HOME/bin/gnvim" "$1/bin/"

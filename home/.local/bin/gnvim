@@ -3,13 +3,13 @@
 # check stdin or pipe
 if [ -t 0 ]; then
     # lauch kitty with no shortcuts and execute neovim
-    kitty -c ~/.config/kitty/kittygnvim.conf nvim "$@" &
+    kitty -c ~/.config/kitty/kittygnvim.conf --class gnvim nvim "$@" &
     KITTYPID=$!
 else
     # export PIPED="$(cat <&0)" # note that this has a kernel limitation as PIPED is expanded
     WRAPPERPID=$$
     # run with piped input
-    kitty -c ~/.config/kitty/kittygnvim.conf /bin/sh -c "cat /proc/$WRAPPERPID/fd/0 | nvim $@" &
+    kitty -c ~/.config/kitty/kittygnvim.conf --class gnvim /bin/sh -c "cat /proc/$WRAPPERPID/fd/0 | nvim $@" &
     KITTYPID=$!
 fi
 

@@ -18,5 +18,3 @@ CFG_NVIM_DIR="$(dirname "$BASH_SOURCE")"
 # TODO XXX FIXME:the icon did not work with xseticon inside the castle
 cp "$CFG_NVIM_DIR/neovim-icon.png" "$HOME/Pictures/"
 cp "$CFG_NVIM_DIR/neovim-icon.png" "$HOME/.local/share/icons/neovim.png"
-# link the gnvim wrapper to bin
-ln -s "$CFG_NVIM_DIR/gnvim.sh" "$HOME/bin/gnvim"
