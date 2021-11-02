@@ -1,0 +1,4 @@
+{
+    // set python to python3
+    "python.pythonPath": "python3"
+}
