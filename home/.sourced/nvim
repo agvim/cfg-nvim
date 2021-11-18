@@ -1,4 +1,4 @@
-alias vim="nvim"
+alias vim="nvim-nightly"
 alias gvim="neovide --multigrid --"
-alias vimdiff="nvim -d"
+alias vimdiff="nvim-nightly -d"
 alias gvimdiff="neovide --multigrid -- -d"

@@ -114,7 +114,8 @@
   " automatically strip trailing whitespace for these file types
   autocmd FileType c,cpp,java,go,php,javascript,puppet,python,rust,twig,xml,yml,perl,sql,tex,markdown,docbk,xsd,xslt autocmd BufWritePre <buffer> call StripTrailingWhitespace()
   " python is indentation based folding
-  autocmd FileType python setlocal foldmethod=indent
+  " should be handled by treesitter
+  " autocmd FileType python setlocal foldmethod=indent
 
   " searching
   set hlsearch
@@ -222,7 +223,7 @@
   " Plug 'mattn/emmet-vim'
   " endif
 
-  if !exists('g:vscode') && has('nvim')
+  if !exists('g:vscode')
   Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
   " Installed modules
   " :TSInstall python
@@ -417,7 +418,7 @@
   endif
 
   " highlight colors
-  if has('nvim') && !exists('g:vscode')
+  if !exists('g:vscode')
   Plug 'norcalli/nvim-colorizer.lua'
   endif
 
@@ -456,7 +457,6 @@
 
   " show indent levels
   if !exists('g:vscode')
-  if has('nvim')
   Plug 'lukas-reineke/indent-blankline.nvim'
     let g:indent_blankline_show_first_indent_level = v:false
     " let g:indent_blankline_char = '|'
@@ -464,16 +464,6 @@
     let g:indent_blankline_show_current_context = v:true
   " Plug 'Yggdroot/indentLine'
     " let g:indentLine_defaultGroup = 'SpecialKey'
-  else
-  Plug 'nathanaelkane/vim-indent-guides' " {
-    let g:indent_guides_start_level = 2
-    let g:indent_guides_guide_size = 1
-    let g:indent_guides_enable_on_vim_startup = 1
-    let g:indent_guides_auto_colors = 0
-    autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=#586e75 ctermbg=240
-    autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=#839496 ctermbg=244
-  " }
-  endif
   endif
 
   " xml tag closing, in vscode use auto close tag and auto rename tag
@@ -519,9 +509,11 @@
   color NeoSolarized
   " background is autodetected by vim
   " set background=dark
+  " briefly highlight yanked text
+  au TextYankPost * lua vim.highlight.on_yank {higroup="IncSearch", timeout=500, on_visual=true}
 
   " enable colorizer for all file types
-  if has('nvim') && !exists('g:vscode')
+  if !exists('g:vscode')
   lua require'colorizer'.setup()
   endif
   " highlight current word and copies using the same color as vscode
@@ -536,7 +528,7 @@ EOF
 
   " Lualine and barbar tabline
   set noshowmode
-  if has('nvim') && !exists('g:vscode')
+  if !exists('g:vscode')
 lua <<EOF
 local colors = {
   base03  =  '#002b36',
@@ -566,15 +558,23 @@ custom_solarized_dark.insert.a.bg = colors.yellow
 custom_solarized_dark.replace.a.bg = colors.orange
 local background = vim.opt.background:get()
 -- return require('lualine.themes.solarized_' .. background)
-require'lualine'.setup{
-  -- TODO: automatically choose the custom theme based on background
-  options = { theme  = custom_solarized_dark },
-}
+if background == "light" then
+  require'lualine'.setup{
+      options = { theme  = custom_solarized_light },
+  }
+else
+  require'lualine'.setup{
+      options = { theme  = custom_solarized_dark },
+  }
+end
 EOF
+  " force reload of lualine on background change to apply the theme.
+  " FIXME: does not work
+  " autocmd OptionSet background lua require'lualine'.setup()
   endif
 
   " Treesitter stuff
-  if has('nvim') && !exists('g:vscode')
+  if !exists('g:vscode')
 lua <<EOF
 require'nvim-treesitter.configs'.setup {
   highlight = {
@@ -591,9 +591,4 @@ EOF
 
 " change the terminal title to reflect the filename
   set title
-
-  " vim background redraw bugfix
-  if !has('nvim')
-    let &t_ut=''
-  endif
 " }
