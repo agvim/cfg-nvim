@@ -522,9 +522,8 @@
     hi CurrentWordTwins guibg=#054150
   " }
 
-lua <<EOF
-require('nvim-autopairs').setup{}
-EOF
+  " enable autopairs
+  lua require('nvim-autopairs').setup{}
 
   " Lualine and barbar tabline
   set noshowmode
@@ -548,29 +547,21 @@ local colors = {
   cyan    =  '#2aa198',
   green   =  '#859900',
 }
-local custom_solarized_light = require'lualine.themes.solarized_light'
+-- FIXME: using a global variable to use it in the autocmd below.
+-- try to change once the neovim lua api exposes autocmd
+_G.custom_solarized = {}
 -- Change the insert and replace background to yellow and orange so green and red are free
-custom_solarized_light.insert.a.bg = colors.yellow
-custom_solarized_light.replace.a.bg = colors.orange
-local custom_solarized_dark = require'lualine.themes.solarized_dark'
--- Change the insert and replace background to yellow and orange so green and red are free
-custom_solarized_dark.insert.a.bg = colors.yellow
-custom_solarized_dark.replace.a.bg = colors.orange
-local background = vim.opt.background:get()
--- return require('lualine.themes.solarized_' .. background)
-if background == "light" then
-  require'lualine'.setup{
-      options = { theme  = custom_solarized_light },
-  }
-else
-  require'lualine'.setup{
-      options = { theme  = custom_solarized_dark },
-  }
-end
+_G.custom_solarized["light"] = require'lualine.themes.solarized_light'
+_G.custom_solarized["light"].insert.a.bg = colors.yellow
+_G.custom_solarized["light"].replace.a.bg = colors.orange
+_G.custom_solarized["dark"] = require'lualine.themes.solarized_dark'
+_G.custom_solarized["dark"].insert.a.bg = colors.yellow
+_G.custom_solarized["dark"].replace.a.bg = colors.orange
+require'lualine'.setup{
+  options = { theme  = _G.custom_solarized[vim.opt.background:get()] },
+}
 EOF
-  " force reload of lualine on background change to apply the theme.
-  " FIXME: does not work
-  " autocmd OptionSet background lua require'lualine'.setup()
+  autocmd OptionSet background lua require'lualine'.setup{ options = {theme=_G.custom_solarized[vim.opt.background:get()]},}
   endif
 
   " Treesitter stuff
