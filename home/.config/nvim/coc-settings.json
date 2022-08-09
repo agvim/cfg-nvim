@@ -1,6 +1,6 @@
 {
     // set python to python3
-    "python.pythonPath": "python3"
+    "python.pythonPath": "python3",
 	"suggest.completionItemKindLabels": {
 		"keyword": "\uf1de",
 		"variable": "\ue79b",

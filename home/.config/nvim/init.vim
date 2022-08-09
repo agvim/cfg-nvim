@@ -506,13 +506,13 @@
   " let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
   " let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
   " color NeoSolarized
-  color solarized
 lua <<EOF
 require('solarized').setup({
   mode = 'dark',
   theme = 'vim',
 })
 EOF
+  color solarized
   " Fix CoC menu background for selected item
   hi CocMenuSel guibg=#002b36
   " background is autodetected by vim
@@ -569,7 +569,6 @@ require'nvim-treesitter.configs'.setup {
   indent = {
     enable = true,
   },
-l
 }
 EOF
   set foldmethod=expr
