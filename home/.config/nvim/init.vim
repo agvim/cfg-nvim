@@ -194,9 +194,14 @@
   call plug#begin('~/.vim/plugged')
 
   " solarized color scheme
-  Plug 'iCyMind/NeoSolarized' " {
-    let g:neosolarized_italic = 1
-  " }
+  " Plug 'Tsuzat/NeoSolarized.nvim' " {
+  "   let g:NeoSolarized_italics = 1 " 0 or 1
+  "   let g:NeoSolarized_visibility = 'normal' " low, normal, high
+  "   let g:NeoSolarized_diffmode = 'normal' " low, normal, high
+  "   let g:NeoSolarized_termtrans = 1 " 0(default) or 1 -> Transparency
+  "   let g:NeoSolarized_lineNr = 0 " 0 or 1 (default) -> To Show backgroung in LineNr
+  " " }
+  Plug 'maxmx03/solarized.nvim'
 
   " to use % to go to matching opening/closing tag/char
   Plug 'vim-scripts/matchit.zip'
@@ -223,19 +228,14 @@
   " Plug 'mattn/emmet-vim'
   " endif
 
+  " snippets and auto-completion (TODO: tune default configuration)
   if !exists('g:vscode')
   Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
   " Installed modules
   " :TSInstall python
-  endif
-  " snippets and auto-completion (TODO: tune default configuration)
-  if !exists('g:vscode')
   Plug 'neoclide/coc.nvim', {'branch': 'release'} " {
     " disable warnings when using old vim
     let g:coc_disable_startup_warning = 1
-
-    " TextEdit might fail if hidden is not set.
-    set hidden
 
     " Some servers have issues with backup files, see #649.
     set nobackup
@@ -264,12 +264,17 @@
     " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
     " other plugin before putting this into your config.
     inoremap <silent><expr> <TAB>
-          \ pumvisible() ? "\<C-n>" :
-          \ <SID>check_back_space() ? "\<TAB>" :
+          \ coc#pum#visible() ? coc#pum#next(1):
+          \ CheckBackspace() ? "\<Tab>" :
           \ coc#refresh()
-    inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+    inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
 
-    function! s:check_back_space() abort
+    " Make <CR> to accept selected completion item or notify coc.nvim to format
+    " <C-g>u breaks current undo, please make your own choice.
+    inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
+                                  \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
+    function! CheckBackspace() abort
       let col = col('.') - 1
       return !col || getline('.')[col - 1]  =~# '\s'
     endfunction
@@ -280,11 +285,6 @@
     else
       inoremap <silent><expr> <c-@> coc#refresh()
     endif
-
-    " Make <CR> auto-select the first completion item and notify coc.nvim to
-    " format on enter, <cr> could be remapped by other vim plugin
-    inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
-                                  \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
     " Use `[g` and `]g` to navigate diagnostics
     " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
@@ -298,15 +298,14 @@
     nmap <silent> gr <Plug>(coc-references)
 
     " Use K to show documentation in preview window.
-    nnoremap <silent> K :call <SID>show_documentation()<CR>
+    " nnoremap <silent> K :call <SID>ShowDocumentation()<CR>
+    nnoremap <silent> K :call ShowDocumentation()<CR>
 
-    function! s:show_documentation()
-      if (index(['vim','help'], &filetype) >= 0)
-        execute 'h '.expand('<cword>')
-      elseif (coc#rpc#ready())
+    function! ShowDocumentation()
+      if CocAction('hasProvider', 'hover')
         call CocActionAsync('doHover')
       else
-        execute '!' . &keywordprg . " " . expand('<cword>')
+        call feedkeys('K', 'in')
       endif
     endfunction
 
@@ -365,13 +364,13 @@
     xmap <silent> <C-s> <Plug>(coc-range-select)
 
     " Add `:Format` command to format current buffer.
-    command! -nargs=0 Format :call CocAction('format')
+    command! -nargs=0 Format :call CocActionAsync('format')
 
     " Add `:Fold` command to fold current buffer.
-    command! -nargs=? Fold :call     CocAction('fold', <f-args>)
+    command! -nargs=? Fold :call CocActionAsync('fold', <f-args>)
 
     " Add `:OR` command for organize imports of the current buffer.
-    command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
+    command! -nargs=0 OR :call CocActionAsync('runCommand', 'editor.action.organizeImport')
 
     " Add (Neo)Vim's native statusline support.
     " NOTE: Please see `:h coc-status` for integrations with external plugins that
@@ -412,14 +411,14 @@
     " }
   endif
 
+  " highlighting
+  if !exists('g:vscode')
   " highlight word under cursor
-  if !exists('g:vscode')
   Plug 'dominikduda/vim_current_word'
-  endif
-
   " highlight colors
-  if !exists('g:vscode')
   Plug 'norcalli/nvim-colorizer.lua'
+  " highlight improvements for scrollbar
+  " Plug 'kevinhwang91/nvim-hlslens'
   endif
 
   " eases sharing and following editor configuration conventions
@@ -470,6 +469,8 @@
   if !exists('g:vscode')
   Plug 'sukima/xmledit'
   endif
+
+  " icons for non-text area stuff
   if !exists('g:vscode')
   Plug 'ryanoasis/vim-devicons'
   Plug 'kyazdani42/nvim-web-devicons'
@@ -495,8 +496,6 @@
   vnoremap < <gv
   vnoremap > >gv
 
-  " make Y consistent with C and D (yank until end of line).
-  nnoremap Y y$
 " }
 
 " display stuff {
@@ -506,7 +505,16 @@
   set termguicolors
   " let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
   " let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-  color NeoSolarized
+  " color NeoSolarized
+  color solarized
+lua <<EOF
+require('solarized').setup({
+  mode = 'dark',
+  theme = 'vim',
+})
+EOF
+  " Fix CoC menu background for selected item
+  hi CocMenuSel guibg=#002b36
   " background is autodetected by vim
   " set background=dark
   " briefly highlight yanked text
@@ -521,42 +529,29 @@
     hi CurrentWord guibg=#054150
     hi CurrentWordTwins guibg=#054150
   " }
+  " let
 
   " enable autopairs
-  lua require('nvim-autopairs').setup{}
-
+lua <<EOF
+require('nvim-autopairs').setup({
+  map_cr = false,
+  map_bs = false,
+})
+EOF
   " Lualine and barbar tabline
   set noshowmode
   if !exists('g:vscode')
 lua <<EOF
-local colors = {
-  base03  =  '#002b36',
-  base02  =  '#073642',
-  base01  =  '#586e75',
-  base00  =  '#657b83',
-  base0   =  '#839496',
-  base1   =  '#93a1a1',
-  base2   =  '#eee8d5',
-  base3   =  '#fdf6e3',
-  yellow  =  '#b58900',
-  orange  =  '#cb4b16',
-  red     =  '#dc322f',
-  magenta =  '#d33682',
-  violet  =  '#6c71c4',
-  blue    =  '#268bd2',
-  cyan    =  '#2aa198',
-  green   =  '#859900',
-}
 -- FIXME: using a global variable to use it in the autocmd below.
 -- try to change once the neovim lua api exposes autocmd
 _G.custom_solarized = {}
 -- Change the insert and replace background to yellow and orange so green and red are free
 _G.custom_solarized["light"] = require'lualine.themes.solarized_light'
-_G.custom_solarized["light"].insert.a.bg = colors.yellow
-_G.custom_solarized["light"].replace.a.bg = colors.orange
+_G.custom_solarized["light"].insert.a.bg = '#b58900'
+_G.custom_solarized["light"].replace.a.bg = '#cb4b16'
 _G.custom_solarized["dark"] = require'lualine.themes.solarized_dark'
-_G.custom_solarized["dark"].insert.a.bg = colors.yellow
-_G.custom_solarized["dark"].replace.a.bg = colors.orange
+_G.custom_solarized["dark"].insert.a.bg = '#b58900'
+_G.custom_solarized["dark"].replace.a.bg = '#cb4b16'
 require'lualine'.setup{
   options = { theme  = _G.custom_solarized[vim.opt.background:get()] },
 }
@@ -574,6 +569,7 @@ require'nvim-treesitter.configs'.setup {
   indent = {
     enable = true,
   },
+l
 }
 EOF
   set foldmethod=expr
