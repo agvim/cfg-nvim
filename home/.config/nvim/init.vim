@@ -507,14 +507,29 @@
   " let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
   " color NeoSolarized
 lua <<EOF
+local solarized = require 'solarized'
+
+-- fix colors as red & bg do not match the real solarized values
+local function colors(solarized_colors)
+
+  return {
+    bg = '#002b36',
+    red = '#dc322f',
+    danger = '#dc322f',
+    deleted = '#dc322f',
+  }
+end
+
 require('solarized').setup({
   mode = 'dark',
   theme = 'vim',
+  colors = colors,
 })
 EOF
   color solarized
-  " Fix CoC menu background for selected item
+  " Fix CoC menu background and match color for selected item
   hi CocMenuSel guibg=#002b36
+  hi CocSearch guifg=#2aa198
   " background is autodetected by vim
   " set background=dark
   " briefly highlight yanked text
