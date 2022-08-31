@@ -1,4 +1,11 @@
-alias vim="nvim-nightly"
+
+which nvim-nightly > /dev/null
+if [ $? = 0 ]; then
+    alias vim="nvim-nightly"
+    alias vimdiff="nvim-nightly -d"
+else
+    alias vim="nvim"
+    alias vimdiff="nvim -d"
+fi
 alias gvim="neovide --multigrid --"
-alias vimdiff="nvim-nightly -d"
 alias gvimdiff="neovide --multigrid -- -d"

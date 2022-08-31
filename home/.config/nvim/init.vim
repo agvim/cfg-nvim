@@ -147,9 +147,9 @@
   " enable vim spellchecker
   set spell
 
-  " Use Fira code font in gui vim and fall back to the symbols font.
+  " Use Fira code font in gui vim and fall back to JetBrains Mono.
   " In vim is the term font
-  set guifont=Fira\ Code,JetBrains\ Mono,Symbols\ Nerd\ Font:h11
+  set guifont=FiraCode\ Nerd\ Font\ Mono,JetBrainsMono\ Nerd\ Font\ Mono:h11
 
   " set some neovide gui options
   let neovide_remember_window_size = v:true
@@ -510,7 +510,7 @@ lua <<EOF
 local solarized = require 'solarized'
 
 -- fix colors as red & bg do not match the real solarized values
-local function colors(solarized_colors)
+function solarized_colors_dark(solarized_colors)
 
   return {
     bg = '#002b36',
@@ -520,10 +520,24 @@ local function colors(solarized_colors)
   }
 end
 
+function solarized_colors_light(solarized_colors)
+
+  return {
+    bg = '#fdf6e3',
+    red = '#dc322f',
+    danger = '#dc322f',
+    deleted = '#dc322f',
+  }
+end
+
+_G.solarized_colors = {}
+_G.solarized_colors["dark"] = solarized_colors_dark
+_G.solarized_colors["light"] = solarized_colors_light
+
 require('solarized').setup({
   mode = 'dark',
   theme = 'vim',
-  colors = colors,
+  colors = _G.solarized_colors["dark"],
 })
 EOF
   color solarized
@@ -559,19 +573,20 @@ EOF
 lua <<EOF
 -- FIXME: using a global variable to use it in the autocmd below.
 -- try to change once the neovim lua api exposes autocmd
-_G.custom_solarized = {}
+_G.lualine_solarized = {}
 -- Change the insert and replace background to yellow and orange so green and red are free
-_G.custom_solarized["light"] = require'lualine.themes.solarized_light'
-_G.custom_solarized["light"].insert.a.bg = '#b58900'
-_G.custom_solarized["light"].replace.a.bg = '#cb4b16'
-_G.custom_solarized["dark"] = require'lualine.themes.solarized_dark'
-_G.custom_solarized["dark"].insert.a.bg = '#b58900'
-_G.custom_solarized["dark"].replace.a.bg = '#cb4b16'
+_G.lualine_solarized["light"] = require'lualine.themes.solarized_light'
+_G.lualine_solarized["light"].insert.a.bg = '#b58900'
+_G.lualine_solarized["light"].replace.a.bg = '#cb4b16'
+_G.lualine_solarized["dark"] = require'lualine.themes.solarized_dark'
+_G.lualine_solarized["dark"].insert.a.bg = '#b58900'
+_G.lualine_solarized["dark"].replace.a.bg = '#cb4b16'
 require'lualine'.setup{
-  options = { theme  = _G.custom_solarized[vim.opt.background:get()] },
+  options = { theme  = _G.lualine_solarized[vim.opt.background:get()] },
 }
 EOF
-  autocmd OptionSet background lua require'lualine'.setup{ options = {theme=_G.custom_solarized[vim.opt.background:get()]},}
+  autocmd OptionSet background lua require'lualine'.setup{ options = {theme=_G.lualine_solarized[vim.opt.background:get()]},}
+  "autocmd OptionSet background lua require'solarized'.setup{ mode = vim.opt.background:get(), theme = 'vim', colors = _G.solarized_colors[vim.opt.background:get()],}
   endif
 
   " Treesitter stuff
