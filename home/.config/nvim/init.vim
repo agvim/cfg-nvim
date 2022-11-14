@@ -191,7 +191,7 @@
 
 " plugins  config {
   " plugins are managed with vim-plug
-  call plug#begin('~/.vim/plugged')
+  call plug#begin('~/.local/share/nvim/plugged')
 
   " solarized color scheme
   " Plug 'Tsuzat/NeoSolarized.nvim' " {
