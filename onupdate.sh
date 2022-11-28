@@ -9,4 +9,4 @@ if [[ $1 == 1 ]]; then
     $homeshick link cfg-nvim
 fi
 
-nvim "+PlugUpgrade" "+PlugUpdate" '+qa!'
+nvim "+PackerSync" '+qa!'
