@@ -114,20 +114,22 @@ require('packer').startup(function(use)
     -- solarized colorscheme
     use {
         'ishan9299/nvim-solarized-lua',
-        config = vim.cmd[[
-            " do not overwrite the foreground color for spell check marked text,
-            augroup colorschemefix
-                " Remove all group autocommands
-                autocmd!
-                " place it in the colorscheme autocommand to trigger it on background change also
-                " using NONE to preserve the syntax color
-                autocmd ColorScheme * highlight SpellBad ctermfg=NONE guifg=NONE
-                autocmd ColorScheme * highlight SpellCap ctermfg=NONE guifg=NONE
-                autocmd ColorScheme * highlight SpellLocal ctermfg=NONE guifg=NONE
-                autocmd ColorScheme * highlight SpellRare ctermfg=NONE guifg=NONE
-            augroup END
-            colorscheme solarized
-        ]],
+        config = function()
+            vim.cmd[[
+                " do not overwrite the foreground color for spell check marked text,
+                augroup colorschemefix
+                    " Remove all group autocommands
+                    autocmd!
+                    " place it in the colorscheme autocommand to trigger it on background change also
+                    " using NONE to preserve the syntax color
+                    autocmd ColorScheme * highlight SpellBad ctermfg=NONE guifg=NONE
+                    autocmd ColorScheme * highlight SpellCap ctermfg=NONE guifg=NONE
+                    autocmd ColorScheme * highlight SpellLocal ctermfg=NONE guifg=NONE
+                    autocmd ColorScheme * highlight SpellRare ctermfg=NONE guifg=NONE
+                augroup END
+                colorscheme solarized
+            ]]
+        end,
     }
 
     -- show indent levels
