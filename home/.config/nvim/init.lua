@@ -25,7 +25,7 @@ vim.opt.cursorline = true
 
 
 -- highlight yanked text for 200ms using the "Visual" highlight group
-vim.api.nvim_create_autocmd(
+vim.api.nvim_create_autocmd (
     'TextYankPost',
     {
         desc = 'Highlight on yank',
@@ -35,10 +35,11 @@ vim.api.nvim_create_autocmd(
     }
 )
 
--- neovide display options
+-- neovide gui display options
 if vim.fn.exists('g:neovide') then
-    -- Use Fira code font in gui and fall back to JetBrains Mono.
+    -- Use Fira code font and fall back to JetBrains Mono.
     vim.opt.guifont='FiraCode Nerd Font Mono,JetBrainsMono Nerd Font Mono:h11'
+    -- misc neovide options
     vim.g.neovide_remember_window_size = false
     vim.g.neovide_cursor_animation_length = 0.02
     vim.g.neovide_cursor_trail_length = 0
@@ -59,7 +60,7 @@ vim.opt.softtabstop = 4
 vim.opt.shiftwidth = 4
 
 -- Less identation for the following file types
-vim.api.nvim_create_autocmd(
+vim.api.nvim_create_autocmd (
     "FileType",
     {
         pattern = {
@@ -89,8 +90,6 @@ if vim.fn.executable('rg') == 1 then
     vim.opt.grepformat = '%f:%l:%c:%m'
 end
 
---  filetype plugin indent on
-
 -- keymaps
 -- +++++++
 
@@ -116,6 +115,17 @@ require('packer').startup(function(use)
     use {
         'ishan9299/nvim-solarized-lua',
         config = vim.cmd[[
+            " do not overwrite the foreground color for spell check marked text,
+            augroup colorschemefix
+                " Remove all group autocommands
+                autocmd!
+                " place it in the colorscheme autocommand to trigger it on background change also
+                " using NONE to preserve the syntax color
+                autocmd ColorScheme * highlight SpellBad ctermfg=NONE guifg=NONE
+                autocmd ColorScheme * highlight SpellCap ctermfg=NONE guifg=NONE
+                autocmd ColorScheme * highlight SpellLocal ctermfg=NONE guifg=NONE
+                autocmd ColorScheme * highlight SpellRare ctermfg=NONE guifg=NONE
+            augroup END
             colorscheme solarized
         ]],
     }
@@ -186,7 +196,7 @@ require('packer').startup(function(use)
         'yamatsum/nvim-cursorline',
         config = function()
             require('nvim-cursorline').setup {
-                cursorline = { enable = false }
+                cursorline = {enable = false}
             }
         end,
     }
@@ -218,7 +228,6 @@ require('packer').startup(function(use)
     use {
         'nvim-tree/nvim-tree.lua',
         requires = 'nvim-tree/nvim-web-devicons', -- for fancy icons
-        -- nnoremap <silent> <leader>ee :NvimTreeToggle<CR>
         config = function()
             require('nvim-tree').setup {
                 vim.keymap.set('n','<leader>ee', ':NvimTreeToggle<CR>')
@@ -284,7 +293,7 @@ require('packer').startup(function(use)
     use {
         'hrsh7th/nvim-cmp',
         config = function()
-            -- nvim-cmp with lspconfig manual server config not needed as it is handled from mason
+            -- nvim-cmp with lspconfig manual server config not needed as it is handled from mason,
             -- just require the plugins
             require("cmp_nvim_lsp")
             require('lspconfig')
@@ -301,7 +310,7 @@ require('packer').startup(function(use)
                         luasnip.lsp_expand(args.body)
                     end,
                 },
-                mapping = cmp.mapping.preset.insert({
+                mapping = cmp.mapping.preset.insert ({
                     -- documentation scroll
                     ['<C-d>'] = cmp.mapping.scroll_docs(-4),
                     ['<C-f>'] = cmp.mapping.scroll_docs(4),
@@ -321,7 +330,7 @@ require('packer').startup(function(use)
                         else
                             fallback()
                         end
-                    end, { 'i', 's' }),
+                    end, {'i', 's'}),
                     -- go to previous completion item with shift tab
                     ['<S-Tab>'] = cmp.mapping(function(fallback)
                         if cmp.visible() then
@@ -331,14 +340,14 @@ require('packer').startup(function(use)
                         else
                             fallback()
                         end
-                    end, { 'i', 's' }),
+                    end, {'i', 's'}),
                 }),
                 sources = {
-                    { name = 'nvim_lsp' },
-                    { name = 'nvim_lsp_signature_help' },
-                    { name = 'luasnip' },
-                    { name = 'path' },
-                    { name = 'buffer', keyword_length = 3 },
+                    {name = 'nvim_lsp'},
+                    {name = 'nvim_lsp_signature_help'},
+                    {name = 'luasnip'},
+                    {name = 'path'},
+                    {name = 'buffer', keyword_length = 3},
                 },
             }
 
@@ -363,7 +372,7 @@ require('packer').startup(function(use)
 
                 -- Mappings.
                 -- See `:help vim.lsp.*` for documentation on any of the below functions
-                local bufopts = { noremap=true, silent=true, buffer=bufnr }
+                local bufopts = {noremap=true, silent=true, buffer=bufnr}
                 -- Jump to declaration
                 vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, bufopts)
                 -- Jump to the definition
@@ -384,10 +393,10 @@ require('packer').startup(function(use)
                 -- vim.keymap.set('n', '<space>ca', vim.lsp.buf.code_action, bufopts)
                 -- display references
                 vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
-                -- vim.keymap.set('n', '<space>f', function() vim.lsp.buf.format { async = true } end, bufopts)
+                -- vim.keymap.set('n', '<space>f', function() vim.lsp.buf.format {async = true} end, bufopts)
             end
             -- tie together the servers installed with mason with the lsp config + keybindings
-            mason_lspconfig.setup_handlers{
+            mason_lspconfig.setup_handlers {
                 function (server_name) -- default handler (optional)
                     require("lspconfig")[server_name].setup {
                         on_attach = on_attach,

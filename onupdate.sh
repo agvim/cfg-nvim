@@ -9,4 +9,4 @@ if [[ $1 == 1 ]]; then
     $homeshick link cfg-nvim
 fi
 
-nvim "+PackerSync" '+qa!'
+nvim -c 'autocmd User PackerComplete quitall' -c 'PackerSync'
