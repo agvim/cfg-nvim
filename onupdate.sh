@@ -5,8 +5,8 @@
 # if the homeshick repo has an update, re-link cfg-nvim files before updating
 # nvim
 if [[ $1 == 1 ]]; then
-    homeshick=$HOME/.homesick/repos/homeshick/bin/homeshick
-    $homeshick link cfg-nvim
+	homeshick=$HOME/.homesick/repos/homeshick/bin/homeshick
+	$homeshick link cfg-nvim
 fi
 
-nvim -c 'autocmd User PackerComplete quitall' -c 'PackerSync'
+nvim --headless "+Lazy! sync" +qa
