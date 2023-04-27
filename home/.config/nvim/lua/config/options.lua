@@ -8,3 +8,13 @@ vim.opt.title = true
 -- wrap text with a visually distinct line wrap
 vim.opt.wrap = true
 vim.opt.showbreak = "↪ "
+
+-- highlight whitespace
+vim.opt.list = true
+vim.opt.listchars = "tab:  ›,trail:•,extends:❯,precedes:❮"
+
+-- indentation: tabs are displayed as 4 spaces, indent with 4 spaces
+vim.opt.expandtab = true
+vim.opt.tabstop = 4
+vim.opt.softtabstop = 4
+vim.opt.shiftwidth = 4
