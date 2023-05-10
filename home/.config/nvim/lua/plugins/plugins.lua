@@ -83,9 +83,10 @@ return {
         dependencies = { "windwp/nvim-ts-autotag", },
         init = function()
             -- use treesitter html parser for xml based files
+            vim.g.xml_filetypes = {"xml", "docbk"}
             vim.treesitter.language.register(
                 "html",
-                {"xml", "docbk"}
+                vim.g.xml_filetypes
             )
         end,
         opts = { autotag = { enable = true, }, },
@@ -96,7 +97,7 @@ return {
             -- enable ts-autotag for xml based files
             -- disable skip tag so all tags are closed
             require("nvim-ts-autotag").setup({
-                filetypes = {"html", "xml", "docbk"},
+                filetypes = vim.g.xml_filetypes,
                 skip_tag = {}
             })
         end,
