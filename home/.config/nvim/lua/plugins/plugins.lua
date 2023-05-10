@@ -8,19 +8,20 @@ return {
     {
         "ishan9299/nvim-solarized-lua",
         config = function()
-            vim.cmd([[
-        " do not overwrite the foreground color for spell check marked text,
-        augroup colorschemefix
-        " Remove all group autocommands
-        autocmd!
-        " place it in the colorscheme autocommand to trigger it on background change also
-        " using NONE to preserve the syntax color
-        autocmd ColorScheme solarized highlight SpellBad ctermfg=NONE guifg=NONE
-        autocmd ColorScheme solarized highlight SpellCap ctermfg=NONE guifg=NONE
-        autocmd ColorScheme solarized highlight SpellLocal ctermfg=NONE guifg=NONE
-        autocmd ColorScheme solarized highlight SpellRare ctermfg=NONE guifg=NONE
-        augroup END
-      ]])
+            -- customize the colorscheme in an autocmd so when it is reloaded it is applied
+            local csfixgroup = vim.api.nvim_create_augroup("colorschemefix", { clear = true })
+            vim.api.nvim_create_autocmd("Colorscheme", {
+                pattern = "solarized",
+                group = csfixgroup,
+                -- do not overwrite the foreground collor for spell check marked text
+                -- using vim.cmd.highlight since nvim_set_hl requires a full definition
+                callback = function()
+                    vim.cmd.highlight("SpellBad", "ctermfg=NONE", "guifg=NONE")
+                    vim.cmd.highlight("SpellCap", "ctermfg=NONE", "guifg=NONE")
+                    vim.cmd.highlight("SpellLocal", "ctermfg=NONE", "guifg=NONE")
+                    vim.cmd.highlight("SpellRare", "ctermfg=NONE", "guifg=NONE")
+                end,
+            })
         end,
     },
     {
@@ -51,7 +52,7 @@ return {
         "mbbill/undotree",
         cmd = "UndotreeToggle",
         config = function()
-            vim.cmd([[let g:undotree_SetFocusWhenToggle=1]])
+            vim.g.undotree_SetFocusWhenToggle = 1
         end,
         keys = { { "<leader>uu", "<cmd>UndotreeToggle<cr>", desc = "Toggle undo tree" } },
     },
@@ -76,8 +77,30 @@ return {
     -- disable the lazyvim surround
     { "echasnovski/mini.surround", enabled = false },
 
-    -- xml tag closing
-    { "sukima/xmledit" },
+    -- xml tag closing and renaming using treesitter with "windwp/nvim-ts-autotag"
+    {
+        "nvim-treesitter/nvim-treesitter",
+        dependencies = { "windwp/nvim-ts-autotag", },
+        init = function()
+            -- use treesitter html parser for xml based files
+            vim.treesitter.language.register(
+                "html",
+                {"xml", "docbk"}
+            )
+        end,
+        opts = { autotag = { enable = true, }, },
+    },
+    {
+        "windwp/nvim-ts-autotag",
+        config = function()
+            -- enable ts-autotag for xml based files
+            -- disable skip tag so all tags are closed
+            require("nvim-ts-autotag").setup({
+                filetypes = {"html", "xml", "docbk"},
+                skip_tag = {}
+            })
+        end,
+    },
 
     -- eases sharing and following editor configuration conventions
     { "gpanders/editorconfig.nvim" },
