@@ -9,10 +9,9 @@ return {
         "ishan9299/nvim-solarized-lua",
         config = function()
             -- customize the colorscheme in an autocmd so when it is reloaded it is applied
-            local csfixgroup = vim.api.nvim_create_augroup("colorschemefix", { clear = true })
             vim.api.nvim_create_autocmd("Colorscheme", {
                 pattern = "solarized",
-                group = csfixgroup,
+                group = vim.api.nvim_create_augroup("colorschemefix", { clear = true }),
                 -- do not overwrite the foreground collor for spell check marked text
                 -- using vim.cmd.highlight since nvim_set_hl requires a full definition
                 callback = function()
