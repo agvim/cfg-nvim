@@ -102,9 +102,6 @@ return {
         end,
     },
 
-    -- eases sharing and following editor configuration conventions
-    { "gpanders/editorconfig.nvim" },
-
     {
         "neovim/nvim-lspconfig",
         opts = {
