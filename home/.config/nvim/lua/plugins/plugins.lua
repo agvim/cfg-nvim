@@ -28,24 +28,6 @@ return {
         opts = { colorscheme = "solarized" },
     },
 
-    -- highlight colors
-    {
-        "norcalli/nvim-colorizer.lua",
-        config = function()
-            require("colorizer").setup()
-        end,
-    },
-
-    -- tune lazyvim indent display
-    {
-        "lukas-reineke/indent-blankline.nvim",
-        opts = {
-            indent_blankline_use_treesitter = true,
-            show_trailing_blankline_indent = false,
-            show_current_context = true,
-        },
-    },
-
     -- show the undo tree in an easier to use form
     {
         "mbbill/undotree",
@@ -54,14 +36,6 @@ return {
             vim.g.undotree_SetFocusWhenToggle = 1
         end,
         keys = { { "<leader>uu", "<cmd>UndotreeToggle<cr>", desc = "Toggle undo tree" } },
-    },
-
-    -- functions and symbols bar
-    {
-        "simrat39/symbols-outline.nvim",
-        cmd = "SymbolsOutline",
-        keys = { { "<leader>cs", "<cmd>SymbolsOutline<cr>", desc = "Symbols Outline" } },
-        config = true,
     },
 
     -- =================
@@ -79,7 +53,6 @@ return {
     -- xml tag closing and renaming using treesitter with "windwp/nvim-ts-autotag"
     {
         "nvim-treesitter/nvim-treesitter",
-        dependencies = { "windwp/nvim-ts-autotag", },
         init = function()
             -- use treesitter html parser for xml based files
             vim.g.xml_filetypes = {"xml", "docbk"}
@@ -88,7 +61,6 @@ return {
                 vim.g.xml_filetypes
             )
         end,
-        opts = { autotag = { enable = true, }, },
     },
     {
         "windwp/nvim-ts-autotag",
@@ -100,20 +72,5 @@ return {
                 skip_tag = {}
             })
         end,
-    },
-
-    {
-        "neovim/nvim-lspconfig",
-        opts = {
-            -- language servers for languages I'm using
-            servers = {
-                pyright = {},
-                clangd = {},
-                rust_analyzer = {},
-                texlab = {},
-            },
-            -- disable autoformatting on save
-            autoformat = false,
-        },
     },
 }
